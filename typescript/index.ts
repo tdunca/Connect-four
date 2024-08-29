@@ -1,4 +1,6 @@
-import prompt from './helpers/prompt.js';
+import { Game } from './game.js';
 
-let name = prompt('Vad heter du? ');
-console.log(`Hej ${name}!`);
+
+
+const game = new Game('PlayerOne', 'PlayerTwo');
+game.start();
