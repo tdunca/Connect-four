@@ -1,5 +1,6 @@
 import { Board } from "./board.js";
 import { Player } from "./player.js";
+import { BotPlayer } from "./botPlayer.js";
 import prompt from "./helpers/prompt.js";
 
 export class Game {
@@ -8,10 +9,15 @@ export class Game {
   private board: Board;
 
   public constructor() {
-      this.playerX = new Player(prompt("Spelare X:s namn: "), "X")
-      this.playerO = new Player(prompt("Spelare 0:s namn: "), "0")
-      this.board = new Board()
-      this.start();
+	const isBot = prompt("Vill du spela mot en bot? (ja/nej): ").toLowerCase() === 'ja';
+    this.playerX = new Player(prompt("Spelare X:s namn: "), "X");
+	if (isBot) {
+		this.playerO = new BotPlayer("0");
+	} else {
+		this.playerO = new Player(prompt("Spelare 0:s namn: "), "0");
+	}
+    this.board = new Board()
+    this.start();
 	}
 
 	public start(): void {
@@ -21,7 +27,14 @@ export class Game {
 			this.board.render();
 
 			const currentPlayer = this.board.currentPlayerColor === 'X' ? this.playerX : this.playerO;
-			let column = this.getMove(currentPlayer);
+			let column: number;
+
+			if (currentPlayer instanceof BotPlayer) {
+				column = currentPlayer.getMove(this.board.columns);
+			console.log(`Bot väljer kolumn ${column + 1}`);
+			} else {
+				column = this.getMove(currentPlayer);
+			}
 
 			if (!this.board.isColumnFull(column)) {
 				this.board.dropPiece(column, currentPlayer.color);
