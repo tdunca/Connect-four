@@ -37,37 +37,28 @@ export class Game {
 		console.log("Ogiltig kollumn. Försök igen.");
 		continue;
 	  }
+	  //drops piece into column
 	  this.makeMove(player.color, column);
     }
   }
 
-  private makeMove(color: string, row: number, column: number) {
-    // don't make any move if the game is over
-    if (this.board.gameOver) { return false; }
-    // check that the color is X or O - otherwise don't make the move
-    if (color !== 'X' && color !== 'O') { return false; }
-    // check that the color matches the player's turn - otherwise don't make the move
-    if (color !== this.board.currentPlayerColor) { return false; }
-    // check that the row and column are numbers - otherwise don't make the move
-    if (isNaN(row) || isNaN(column)) { return false; }
-    // check that the row is between 0 and 2 - otherwise don't make the move
-    if (row < 0 || row >= this.board.matrix.length) { return false; }
-    // check that the column is between 0 and 2 - otherwise don't make the move
-    if (column < 0 || column >= this.board.matrix[0].length) { return false; }
-    // check that the position is empty - otherwise don't make the move
-    if (this.board.matrix[row][column] !== ' ') { return false; }
+  private makeMove(color: string, column: number) {
+    if (this.board.gameOver) { return; }
+    if (color !== this.board.currentPlayerColor) { return; }
 
-    // make the move
-    this.board.matrix[row][column] = color;
-    // change the current player color
-    this.board.currentPlayerColor = this.board.currentPlayerColor === 'X' ? 'O' : 'X';
-    // check if someone has won or if it's a draw/tie and update properties
-    this.board.winner = this.winCheck();
+	//drops piece into column
+	this.board.dropPiece(column, color);
+
+	//checks if someone has won or draw
+	this.board.winner = this.winCheck();
     this.board.isADraw = this.drawCheck();
+
     // the game is over if someone has won or if it's a draw
     this.board.gameOver = !!this.board.winner || this.board.isADraw;
-    // return true if the move could be made
-    return true;
+
+	//switch to the next player
+	this.board.currentPlayerColor = this.board.currentPlayerColor === 'X' ? '0' : 'X';
+
   }
 
   private winCheck() {
