@@ -10,7 +10,7 @@ export class Game {
   public constructor() {
     while (true) {
       this.playerX = new Player(prompt("Spelare X:s namn: "), "X")
-      this.playerO = new Player("Dumb bot", "O")
+      this.playerO = new Player(prompt("Spelare 0:s namn: "), "O")
       this.board = new Board()
       this.start()
       this.whoHasWonOnGameOver()
