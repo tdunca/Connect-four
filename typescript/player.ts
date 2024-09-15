@@ -1,9 +1,10 @@
 export class Player {
-	public name:string
-	public color:string
+	constructor(public name: string, public color: string) {}
+	// public name:string
+	// public color:string
 
-	public constructor(name:string, color:string){
-		this.name=name
-		this.color=color
-	}
+	// public constructor(name:string, color:string){
+	// 	this.name=name
+	// 	this.color=color
+	// }
 }
