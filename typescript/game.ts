@@ -10,18 +10,22 @@ export class Game {
 
   public constructor() {
 	const isBot = prompt("Vill du spela mot en bot? (ja/nej): ").toLowerCase() === 'ja';
+
+	//initialises players, X is always human, 0 is human or bot
     this.playerX = new Player(prompt("Spelare X:s namn: "), "X");
 	if (isBot) {
 		this.playerO = new BotPlayer("0");
 	} else {
 		this.playerO = new Player(prompt("Spelare 0:s namn: "), "0");
 	}
+
     this.board = new Board()
     this.start();
 	}
 
 	public start(): void {
         console.log(`Välkomna ${this.playerX.name} (X) och ${this.playerO.name} (0)`);
+
 		while (!this.board.gameOver) {
 			console.clear();
 			this.board.render();
@@ -29,6 +33,7 @@ export class Game {
 			const currentPlayer = this.board.currentPlayerColor === 'X' ? this.playerX : this.playerO;
 			let column: number;
 
+			//gets move from current player
 			if (currentPlayer instanceof BotPlayer) {
 				column = currentPlayer.getMove(this.board.columns);
 			console.log(`Bot väljer kolumn ${column + 1}`);
@@ -36,6 +41,7 @@ export class Game {
 				column = this.getMove(currentPlayer);
 			}
 
+			//Checks if current column is full
 			if (!this.board.isColumnFull(column)) {
 				this.board.dropPiece(column, currentPlayer.color);
 				this.board.winner = this.board.checkWin();
@@ -65,6 +71,7 @@ export class Game {
 
   private endGame(): void {
 	console.clear();
+	//renders final board state
 	this.board.render();
 	if (this.board.winner) {
 		const winningPlayer = this.board.winner === 'X' ? this.playerX : this.playerO;

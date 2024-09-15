@@ -1,7 +1,7 @@
 export class Board {
   private rows: number;
   public columns: number;
-  public matrix: string[][];
+  public matrix: string[][]; //2D array representing board
   public currentPlayerColor: string;
   public winner: string | false;
   public isADraw: boolean;
@@ -19,6 +19,7 @@ export class Board {
 
 
   public render(): void {
+	//render board state to console
       const line = '\n' + '-'.repeat(29) + '\n';
       console.log(
           line +
@@ -29,11 +30,13 @@ export class Board {
 
 
   public isColumnFull(column: number): boolean {
+	//checks if column is full
 	return this.matrix[0][column] !== ' ';
   }
 
 
   public dropPiece(column: number, color: string): boolean {
+	//drops piece into selected column
 	for (let row = this.rows - 1; row >= 0; row--) {
 		if (this.matrix[row][column] === ' '){
 			this.matrix[row][column] = color;
@@ -43,6 +46,7 @@ export class Board {
 	return false;
   }
   public checkWin(): string | false {
+	//checks for wincombo
         const directions: [number, number][] = [
             [0, 1],  // Horizontal
             [1, 0],  // Vertical
@@ -51,6 +55,7 @@ export class Board {
         ];
 
         const checkDirection = (r: number, c: number, dr: number, dc: number, color: string): boolean => {
+			//checks for consecutive pieces in direction
             for (let i = 0; i < 4; i++) {
                 const nr = r + i * dr;
                 const nc = c + i * dc;
@@ -61,6 +66,7 @@ export class Board {
             return true;
         };
 
+		//checks win for both players
         for (const color of ['X', '0']) {
             for (let r = 0; r < this.rows; r++) {
                 for (let c = 0; c < this.columns; c++) {
@@ -78,6 +84,7 @@ export class Board {
     }
 
     public checkDraw(): boolean {
+		//checks for winner on full board
         return !this.checkWin() && this.matrix[0].every(cell => cell !== ' ');
     }
 }
