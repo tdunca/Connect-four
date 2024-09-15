@@ -1,7 +1,7 @@
 export class Board {
-  public matrix: string[][]
+  public matrix: string[][];
   public currentPlayerColor = string;
-  public winner: string | boolean
+  public winner: string | boolean;
   public isADraw = boolean;
   public gameOver = boolean;
 
@@ -28,5 +28,19 @@ export class Board {
       );
   }
 
+  //checks column if full
+  public isColumnFull(column: number): boolean {
+	return this.matrix[0][column] !== ' '; //if top row is full, column is full
+  }
 
+  //drop piece into lowest avalible position in chosen column
+  public dropPiece(column: number, color: string): boolean {
+	for (let row = this.matrix.length - 1; row >= 0; row--) {
+		if (this.matrix[row][column] === ' '){
+			this.matrix[row][column] = color;
+			return true; //piece placed successfully
+		}
+	}
+	return false; //no space in column
+  }
 }
