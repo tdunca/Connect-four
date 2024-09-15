@@ -1,6 +1,6 @@
 export class Board {
   private rows: number;
-  private columns: number;
+  public columns: number;
   public matrix: string[][];
   public currentPlayerColor: string;
   public winner: string | false;
