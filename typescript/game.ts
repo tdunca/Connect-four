@@ -3,9 +3,9 @@ import { Player } from "./player.js";
 import prompt from "./helpers/prompt.js";
 
 export class Game {
-	private playerX: Player
-  private playerO: Player
-  private board: Board
+  private playerX: Player;
+  private playerO: Player;
+  private board: Board;
 
   public constructor() {
     while (true) {
@@ -26,15 +26,18 @@ export class Game {
     while (!this.board.gameOver) {
       console.clear();
       this.board.render();
-      let player = this.board.currentPlayerColor === 'X'
-          ? this.playerX : this.playerO;
+      let player = this.board.currentPlayerColor === 'X' ? this.playerX : this.playerO;
       let move = prompt(
-          `Ange ditt drag ${player.color} ${player.name} - skriv in rad,kolumn: `
+          `Ange ditt drag ${player.color} ${player.name} - välj en kolumn (1-7): `
       );
-      // convert row and columns to numbers and zero-based indexes
-      let [row, column] = move.split(',').map((x: string) => +x.trim() - 1);
-      // try to make the move
-      this.makeMove(player.color, row, column);
+      let column = +move.trim() - 1;
+
+	  //check column number is valid and not full
+	  if (isNaN(column) || column < 0 || column >= this.board.matrix[0].length || this.board.isColumnFull(column)) {
+		console.log("Ogiltig kollumn. Försök igen.");
+		continue;
+	  }
+	  this.makeMove(player.color, column);
     }
   }
 
