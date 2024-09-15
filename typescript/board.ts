@@ -1,17 +1,16 @@
 export class Board {
   public matrix: string[][];
-  public currentPlayerColor = string;
-  public winner: string | boolean;
-  public isADraw = boolean;
-  public gameOver = boolean;
+  public currentPlayerColor: string;
+  public winner: string | boolean
+  public isADraw: boolean;
+  public gameOver: boolean;
 
   constructor() {
 	//creates a 6 row 7 col board
-    this.matrix = [...new Array(6)].map(() =>
-      [...new Array(7)].map(() => ' ')
-    );
+    this.matrix = [...new Array(6)].map(() =>[...new Array(7)].map(() => ' '));
     //player choice
     this.currentPlayerColor = 'X';
+
     this.winner = false;
     this.isADraw = false;
     this.gameOver = false;
@@ -38,6 +37,7 @@ export class Board {
 	for (let row = this.matrix.length - 1; row >= 0; row--) {
 		if (this.matrix[row][column] === ' '){
 			this.matrix[row][column] = color;
+			console.log (`Placed ${color} in row ${row}, column ${column}`);
 			return true; //piece placed successfully
 		}
 	}

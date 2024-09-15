@@ -10,7 +10,7 @@ export class Game {
   public constructor() {
     while (true) {
       this.playerX = new Player(prompt("Spelare X:s namn: "), "X")
-      this.playerO = new Player(prompt("Spelare 0:s namn: "), "O")
+      this.playerO = new Player(prompt("Spelare 0:s namn: "), "0")
       this.board = new Board()
       this.start()
       this.whoHasWonOnGameOver()
@@ -46,8 +46,13 @@ export class Game {
     if (this.board.gameOver) { return; }
     if (color !== this.board.currentPlayerColor) { return; }
 
-	//drops piece into column
-	this.board.dropPiece(column, color);
+	//place piece in selected column
+	const moveMade = this.board.dropPiece(column, color);
+
+	if (!moveMade) {
+		console.log("Ogiltigt drag. Försök igen.");
+		return; //stop here if move was invalid
+	}
 
 	//checks if someone has won or draw
 	this.board.winner = this.winCheck();
@@ -59,44 +64,42 @@ export class Game {
 	//switch to the next player
 	this.board.currentPlayerColor = this.board.currentPlayerColor === 'X' ? '0' : 'X';
 
+	//debug log
+	console.log(`Next player's turn: ${this.board.currentPlayerColor}`);
+
   }
 
   private winCheck() {
-    // m - a short alias for this.matrix
-    let m = this.board.matrix;
-    // represent ways you can win as offset from ONE position on the board
-    let offsets = [
-        [[0, 0], [0, 1], [0, 2], [0, 3]],  // horizontal win
-        [[0, 0], [1, 0], [2, 0], [3, 0]],  // vertical win
-        [[0, 0], [1, 1], [2, 2], [3, 3]],  // diagonal 1 win
-        [[0, 0], [1, -1], [2, -2], [3, -3]] // diagonal 2 win
+	const m = this.board.matrix;
+    const directions = [
+        [[0, 1], [0, 2], [0, 3]],  // horizontal right
+        [[1, 0], [2, 0], [3, 0]],  // vertical down
+        [[1, 1], [2, 2], [3, 3]],  // diagonal down-right
+        [[1, -1], [2, -2], [3, -3]] // diagonal down-left
     ];
-    // loop through each player color, each position (row + column),
-    // each winType/offsets and each offset coordinate added to the position
-    // to check if someone has won :)
-    for (let color of 'XO') {
-      // r = row, c = column
+
+    for (let color of ['X', '0']) {
       for (let r = 0; r < m.length; r++) {
         for (let c = 0; c < m[0].length; c++) {
-          // ro = row offset, co = column offset
-          for (let winType of offsets) {
-            let colorsInCombo = '';
-            for (let [ro, co] of winType) {
-              colorsInCombo += (m[r + ro] || [])[c + co];
-            }
-            if (colorsInCombo === color.repeat(4)) {
-              return color;
-            }
-          }
+			if (m[r][c] === color) {
+				for (let dir of directions) {
+					const combo = dir.every(([dr, dc]) => m[r + dr] && m[r + dr][c + dc] === color
+					);
+					if (combo) {
+						return color
+					}
+				}
+			}
         }
       }
     }
     return false;
   }
 
+  //checks if draw
   private drawCheck() {
-    // if no one has won and no empty positions then it's a draw
-    return !this.winCheck() && !this.board.matrix.flat().includes(' ');
+	  const boardFilled = this.board.matrix.every(row => row.every(cell => cell !== ' '));
+      return !this.board.winner && boardFilled;
   }
 
   private whoHasWonOnGameOver() {
@@ -105,7 +108,6 @@ export class Game {
 
     if (this.board.winner) {
       const winningPlayer = this.board.winner === "X" ? this.playerX : this.playerO
-
       console.log(`Grattis ${winningPlayer.color}: ${winningPlayer.name} du vann!`);
     } else {
       console.log('Tyvärr det blev oavgjort...');
